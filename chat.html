@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket Chat</title>
+    <style>
+        /* Add your CSS styles here */
+        #chat-messages {
+            overflow-y: scroll;
+            max-height: 300px;
+        }
+    </style>
+</head>
+<body>
+    <div id="chat-messages"></div>
+    <input type="text" id="message-input" placeholder="Type your message...">
+    <button onclick="sendMessage()">Send</button>
+
+    <script>
+        const chatMessages = document.getElementById('chat-messages');
+        const messageInput = document.getElementById('message-input');
+
+        const wsUrl = 'ws://127.0.0.1:8000/ws/socket-server/';
+
+        // Retrieve the authentication token from localStorage
+        const authToken = localStorage.getItem('access_token');
+
+        // Establish WebSocket connection
+        const ws = new WebSocket(wsUrl);
+
+        // Event listener for when the WebSocket connection is open
+        ws.onopen = function(event) {
+            console.log('WebSocket connection established.');
+            
+            // Send the authentication token as the first message after connection is established
+            if (authToken) {
+                ws.send(authToken);
+            }
+        };
+
+        // Event listener for when a message is received from the WebSocket server
+        ws.onmessage = function(event) {
+            const data = JSON.parse(event.data);
+            const message = `${data.sender_email}: ${data.message} (${data.timestamp})`;
+            appendMessage(message);
+        };
+
+        // Function to send a message via WebSocket
+        function sendMessage() {
+            const message = messageInput.value.trim();
+            if (message !== '') {
+                const data = {
+                    message: message,
+                    sender: 'ash@ash.asha'
+                };
+                ws.send(JSON.stringify(data));
+                messageInput.value = '';
+            }
+        }
+
+        // Function to append a message to the chat interface
+        function appendMessage(message) {
+            const messageElement = document.createElement('div');
+            messageElement.textContent = message;
+            chatMessages.appendChild(messageElement);
+            chatMessages.scrollTop = chatMessages.scrollHeight; // Scroll to bottom
+        }
+    </script>
+</body>
+</html>
