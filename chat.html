@@ -5,6 +5,47 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WebSocket Chat</title>
     <style>
+        .header{
+            display: flex;
+            flex-direction: row;
+        }
+        .chat-container {
+      display: grid;
+      grid-template-columns: 1fr;
+      grid-template-rows: auto;
+      gap: 10px;
+    }
+    
+    .chat-message {
+      background-color: #f2f2f2;
+      padding: 10px;
+      max-width: 70%;
+      word-wrap: break-word;
+    }
+    
+    .user-message {
+      justify-self: flex-start;
+    }
+    
+    .assistant-message {
+      justify-self: flex-end;
+    }
+        .columns{
+            border: 1px solid;
+            width: 20vw;
+            padding: 20px;
+            margin: 5px;
+        }
+        .faces{
+            padding: 10px;
+            background-color: red;
+            margin: 5px;
+            border-radius: 10px;
+            transition: 1s all cubic-bezier(0.075, 0.82, 0.165, 1)
+        }
+        .faces:hover{
+            background-color: pink;
+        }
         /* Add your CSS styles here */
         #chat-messages {
             overflow-y: scroll;
@@ -13,10 +54,25 @@
     </style>
 </head>
 <body>
-    <div id="chat-messages"></div>
+<div class="header">
+    <div class="columns">
+    <div class="listofchats">
+        <div class="faces">Number 1</div>
+        <div class="faces">Number 1</div>
+        <div class="faces">Number 1</div>
+        <div class="faces">Number 1</div>
+    </div>
+    </div>
+    <div class="column2">
+        <div class="chat-container"  id="chat-messages">
+            
+            <!-- More chat messages -->
+          </div>
+    <div></div>
     <input type="text" id="message-input" placeholder="Type your message...">
     <button onclick="sendMessage()">Send</button>
-
+</div>
+</div>
     <script>
         const chatMessages = document.getElementById('chat-messages');
         const messageInput = document.getElementById('message-input');
@@ -52,7 +108,8 @@
             if (message !== '') {
                 const data = {
                     message: message,
-                    sender: 'ash@ash.asha'
+                    sender: 'ash@ash.asha',
+                    receiver: "ash@ash.ash"
                 };
                 ws.send(JSON.stringify(data));
                 messageInput.value = '';
@@ -63,6 +120,8 @@
         function appendMessage(message) {
             const messageElement = document.createElement('div');
             messageElement.textContent = message;
+            messageElement.classList.add('chat-message');
+            messageElement.classList.add('assistant-message');
             chatMessages.appendChild(messageElement);
             chatMessages.scrollTop = chatMessages.scrollHeight; // Scroll to bottom
         }
