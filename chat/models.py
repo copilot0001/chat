@@ -53,6 +53,7 @@ class Message(models.Model):
     receiver = models.ForeignKey(CustomUser, related_name='received_messages', on_delete=models.CASCADE, db_index=True)
     content = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True, db_index=True)
+    status = models.CharField(max_length=10, default='read')
 
     class Meta:
         ordering = ['-timestamp']
